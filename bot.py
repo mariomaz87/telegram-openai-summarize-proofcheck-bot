@@ -246,10 +246,10 @@ def grammar_proof_text(text: str) -> tuple:
 
     if lang == 'it':
         system_msg = "Sei un assistente che corregge la grammatica mantenendo il tono e lo stile originale del testo."
-        user_prompt = f"Correggi il seguente testo per grammatica e chiarezza e illustra le modifiche apportate dopo un segnaposto "%changes%":\\n\\n{text}"
+        user_prompt = f"Correggi il seguente testo per grammatica e chiarezza e illustra le modifiche apportate dopo un segnaposto %changes%, mentre non inserire nulla nel test corretto:\\n\\n{text}"
     else:
         system_msg = "You are an assistant that corrects grammar while maintaining the original tone and style."
-        user_prompt = f"Proofread the following text for grammar and clarity and illustrate changes made after using this placemark "%changes%":\\n\\n{text}"
+        user_prompt = f"Proofread the following text for grammar and clarity and illustrate changes made after using this placemark %changes%, while not including anything in the corrected text:\\n\\n{text}"
 
     logger.info("Sending request to OpenAI API for grammar correction")
     JSON_DATA = {
