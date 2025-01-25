@@ -246,10 +246,10 @@ def grammar_proof_text(text: str) -> tuple:
 
     if lang == 'it':
         system_msg = "Sei un assistente che corregge la grammatica mantenendo il tono e lo stile originale del testo."
-        user_prompt = f"Correggi il seguente testo per grammatica e chiarezza:\\n\\n{text}"
+        user_prompt = f"Correggi il seguente testo per grammatica e chiarezza e illustra le modifiche apportate dopo un segnaposto "%changes%":\\n\\n{text}"
     else:
         system_msg = "You are an assistant that corrects grammar while maintaining the original tone and style."
-        user_prompt = f"Proofread the following text for grammar and clarity:\\n\\n{text}"
+        user_prompt = f"Proofread the following text for grammar and clarity and illustrate changes made after using this placemark "%changes%":\\n\\n{text}"
 
     logger.info("Sending request to OpenAI API for grammar correction")
     JSON_DATA = {
@@ -259,7 +259,7 @@ def grammar_proof_text(text: str) -> tuple:
             {"role": "user", "content": user_prompt}
         ],
         "temperature": 0.5,
-        "max_tokens": 750  # Reduced token limit
+        "max_tokens": 750
     }
 
     correction_response = http.post(
@@ -276,8 +276,12 @@ def grammar_proof_text(text: str) -> tuple:
         logger.warning("No correction received from OpenAI API")
         return "Error: No correction received from the API.", ""
 
+    changes_start = corrected_text.find("%changes%")
+    changes_explanation = corrected_text[changes_start + len("%changes%"):] if changes_start != -1 else ""
+    corrected_text = corrected_text[:changes_start].strip() if changes_start != -1 else corrected_text.strip()
+
     logger.info("Successfully generated grammar correction")
-    return corrected_text, "Changes made: [List the changes here if needed]"
+    return corrected_text, changes_explanation
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
