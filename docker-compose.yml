@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    environment:
+      TELEGRAM_TOKEN: xxx       # Replace with your actual Telegram Bot Token
+      OPENAI_API_KEY: xxx           # Replace with your actual OpenAI API Key
+      MY_CHAT_ID: xxx                       # Replace with your actual chat ID
+    networks:
+      - ttrss_service_only
+      - ttrss_public_access
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  ttrss_service_only:
+    external: true
+  ttrss_public_access:
+    external: true
